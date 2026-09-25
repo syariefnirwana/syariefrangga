@@ -8,7 +8,7 @@
 
   <style>
     /* =====================================================
-       RESET
+       RESET & VIEWPORT
     ===================================================== */
     * {
       margin: 0;
@@ -19,9 +19,6 @@
       -webkit-user-drag: none;
     }
 
-    /* =====================================================
-       VIEWPORT & BACKGROUND
-    ===================================================== */
     html, body {
       width: 100%;
       height: 100%;
@@ -49,10 +46,10 @@
       width: 100%;
       height: 100%;
       display: flex;
-      align-items: flex-end; /* Memindahkan konten lebih ke bawah */
+      align-items: flex-end; 
       justify-content: center;
       padding: clamp(20px, 5vw, 50px);
-      padding-bottom: 12vh; /* Jarak dari bawah */
+      padding-bottom: 12vh; 
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 1s ease, transform 1s ease;
@@ -158,15 +155,15 @@
       height: 100vh;
       display: block;
       z-index: 10;
-      /* Pointer events diatur none agar tombol email bisa diklik. 
-         Interaksi bola di-handle via Javascript di level window */
+      /* Pointer events diatur none agar tombol email tetap bisa diklik. 
+         Event interaction bola di-handle via Javascript window */
       pointer-events: none; 
     }
 
     /* =====================================================
-       LOADING SCREEN
+       LOADING & HELLO SCREEN
     ===================================================== */
-    .loading-screen {
+    .loading-screen, .hello-screen {
       position: fixed;
       inset: 0;
       z-index: 9999;
@@ -176,88 +173,18 @@
       background: #f4f4f4;
       transition: opacity .8s ease, visibility .8s ease;
     }
-    .loading-screen.hide {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .skeleton {
-      width: min(700px, 85vw);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 25px;
-    }
-
-    .skeleton-box {
-      position: relative;
-      overflow: hidden;
-      background: #ddd;
-      border-radius: 10px;
-    }
-
-    .skeleton-box::after {
-      content: "";
-      position: absolute;
-      top: 0; left: -150%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);
-      animation: skeleton-loading 1.4s infinite;
-    }
-
+    
+    .loading-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    
+    .skeleton { width: min(700px, 85vw); display: flex; flex-direction: column; align-items: center; gap: 25px; }
+    .skeleton-box { position: relative; overflow: hidden; background: #ddd; border-radius: 10px; }
     .skeleton-title { width: 180px; height: 90px; border-radius: 20px; }
     .skeleton-name { width: min(400px, 70vw); height: 45px; }
     .skeleton-contact { width: min(500px, 80vw); height: 65px; }
 
-    @keyframes skeleton-loading {
-      0% { left: -150%; }
-      100% { left: 150%; }
-    }
-
-    /* =====================================================
-       HELLO SCREEN
-    ===================================================== */
-    .hello-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 9998;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f4f4f4;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    .hello-screen { z-index: 9998; opacity: 0; visibility: hidden; pointer-events: none; }
     .hello-screen.show { opacity: 1; visibility: visible; }
-    
-    .hello-text {
-      font-size: clamp(60px, 16vw, 150px);
-      font-weight: 400;
-      letter-spacing: -.045em;
-      white-space: nowrap;
-      color: #111;
-      opacity: 0;
-      transform: translateY(12px) scale(.98);
-      filter: blur(4px);
-    }
-    
-    .hello-screen.show .hello-text {
-      animation: hello-appear .8s cubic-bezier(.16, 1, .3, 1) forwards;
-    }
-
-    @keyframes hello-appear {
-      0% { opacity: 0; transform: translateY(12px) scale(.98); filter: blur(4px); }
-      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-    
-    .hello-screen.hide { animation: hello-exit .8s cubic-bezier(.4, 0, 1, 1) forwards; }
-    
-    @keyframes hello-exit {
-      from { opacity: 1; }
-      to { opacity: 0; visibility: hidden; }
-    }
+    .hello-text { font-size: clamp(60px, 16vw, 150px); font-weight: 400; letter-spacing: -.045em; color: #111; }
 
     @media (max-width: 600px) {
       .website { padding: 15px; padding-bottom: 5vh; }
@@ -331,7 +258,7 @@
               website.classList.add("show");
               initBasketballGame(); // Start the game after UI is ready
             }, 700);
-          }, 3000);
+          }, 2500);
         }, 700);
       }, 1200);
     });
@@ -353,6 +280,7 @@
         canvas.style.width = width + "px";
         canvas.style.height = height + "px";
         ctx.scale(dpr, dpr);
+        // Sesuaikan perspektif berdasarkan layar
         focalLength = Math.min(width, height) * 0.8; 
       }
       resize();
@@ -363,58 +291,53 @@
       let particles = [];
       let floatTexts = [];
 
-      // Konfigurasi Ring Basket (Posisi statis di kedalaman/z tertentu)
+      // Konfigurasi Ring Basket (Tanpa tiang, hanya ring bulat yang diperbesar)
       const hoop = {
-        z: 300,        // Jarak ke dalam layar
-        width: 140,    // Lebar papan pantul di kedalaman z=300
-        height: 100,   // Tinggi papan pantul
-        rimRadius: 35, // Jari-jari lingkaran ring basket
+        z: 350,        // Jarak kedalaman (Z) ke dalam layar
+        rimRadius: 55, // DIubah: Ring dibuat lebih besar
       };
 
-      // Konfigurasi Bola (Bergerak di 3D space: x, y, z)
+      // Konfigurasi Bola (Bergerak di koordinat 3D: x, y, z)
       const ball = {
         x: width / 2,
-        y: height * 0.85,
+        y: height - 100,
         z: 0,
         vx: 0, vy: 0, vz: 0,
-        radius: 40,    // Ukuran bola saat di depan (z=0)
+        radius: 40,    // Ukuran bola saat di depan layar (z=0)
         rotation: 0,
         dragging: false,
-        lastX: 0, lastY: 0, lastTime: 0,
-        isSwished: false
+        lastX: 0, lastY: 0, lastTime: 0
       };
 
       // --- 3D PROJECTION FUNCTION ---
-      // Fungsi untuk menerjemahkan koordinat 3D ke 2D Layar
+      // Menerjemahkan koordinat 3D (x,y,z) ke koordinat 2D Layar
       function project(x, y, z) {
+        // Objek menjauh (z membesar) -> skala mengecil
         const scale = focalLength / (focalLength + z);
         const sx = (width / 2) + (x - width / 2) * scale;
         const sy = (height / 2) + (y - height / 2) * scale;
         return { sx, sy, scale };
       }
 
-
       // --- INTERACTION LOGIC ---
-      // Listen di window agar tombol tetap bisa di klik, tapi layar bisa di drag
       window.addEventListener("pointerdown", (e) => {
-        // Jika mengeklik tombol / link, biarkan lewat
+        // Biarkan pengguna mengeklik tautan email tanpa terganggu
         if (e.target.tagName === 'A' || e.target.closest('a')) return;
 
-        const rect = canvas.getBoundingClientRect();
-        const px = e.clientX - rect.left;
-        const py = e.clientY - rect.top;
+        const px = e.clientX;
+        const py = e.clientY;
         
-        // Cek apakah klik berada di area bola (dengan sedikit toleransi)
+        // Cari posisi 2D bola saat ini
         const proj = project(ball.x, ball.y, ball.z);
         const currentRadius = ball.radius * proj.scale;
         
+        // Cek apakah klik mengenai bola
         const dist = Math.hypot(px - proj.sx, py - proj.sy);
-        if (dist < currentRadius * 2) {
+        if (dist < currentRadius * 2.5) { // Toleransi area klik
           ball.dragging = true;
           ball.vx = 0; ball.vy = 0; ball.vz = 0;
           ball.lastX = px; ball.lastY = py;
           ball.lastTime = performance.now();
-          ball.isSwished = false;
         }
       });
 
@@ -426,15 +349,16 @@
         const now = performance.now();
         const dt = Math.max(now - ball.lastTime, 1);
         
-        // Memaksa bola ke koordinat jari (di z = 0)
+        // Tarik bola maju ke depan layar (z=0) saat dipegang
         ball.x = px;
         ball.y = py;
-        ball.z = 0; // Saat dipegang, bola ditarik ke depan
+        ball.z = 0; 
 
-        // Kalkulasi kecepatan swipe
+        // Hitung kekuatan swipe
         ball.vx = ((px - ball.lastX) / dt) * 16;
         ball.vy = ((py - ball.lastY) / dt) * 16;
         
+        // Putar bola sesuai gerakan horizontal
         ball.rotation += ball.vx * 0.05;
         
         ball.lastX = px;
@@ -446,62 +370,60 @@
         if (!ball.dragging) return;
         ball.dragging = false;
 
-        // Jika swipe ke atas cukup kencang, LEMPAR (Tambah vz)!
-        if (ball.vy < -15) {
-          ball.vz = Math.abs(ball.vy) * 1.8; // Kecepatan menjauh ke dalam layar
-          ball.vy *= 1.2;
+        // Jika dilempar ke atas (vy negatif), dorong juga ke DALAM layar (vz positif)
+        if (ball.vy < -5) {
+          ball.vz = Math.abs(ball.vy) * 2.2; // Kecepatan menjauh ke dalam layar
+          ball.vy *= 1.4;
           ball.vx *= 1.2;
         } else {
-          // Drop biasa
-          ball.vz = 0;
+          ball.vz = 0; // Hanya jatuh
         }
       });
 
-
       // --- DRAWING FUNCTIONS ---
+      // Menggambar ring. Dipisah jadi "Belakang" dan "Depan" agar bola bisa lewat di tengahnya.
       function drawHoop(projScale, screenX, screenY, isFrontLayer) {
         ctx.save();
         ctx.translate(screenX, screenY);
         ctx.scale(projScale, projScale);
 
-        if (!isFrontLayer) {
-          // 1. BACKBOARD (Papan Pantul) & TIANG - Digambar di belakang
-          // Tiang
-          ctx.fillStyle = "#ccc";
-          ctx.fillRect(-10, 0, 20, 300); 
+        const r = hoop.rimRadius;
 
-          // Papan Putih
-          ctx.fillStyle = "rgba(255,255,255,0.95)";
-          ctx.fillRect(-hoop.width/2, -hoop.height, hoop.width, hoop.height);
-          
-          // Kotak Merah di Papan
+        if (!isFrontLayer) {
+          // 1. BAGIAN BELAKANG (Digambar sebelum bola)
+          // Setengah lingkaran belakang dari cincin
           ctx.strokeStyle = "#e74c3c";
-          ctx.lineWidth = 4;
-          ctx.strokeRect(-40, -50, 80, 50);
-        } else {
-          // 2. NET (Jaring) & RIM (Cincin) - Digambar di depan bola
-          // Jaring
-          ctx.strokeStyle = "rgba(255,255,255,0.8)";
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 8;
           ctx.beginPath();
-          for(let i=0; i<=5; i++) {
-            let x = -hoop.rimRadius + (i * (hoop.rimRadius*2)/5);
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x * 0.6, 60); // mengerucut ke bawah
-          }
-          for(let i=0; i<=3; i++) {
-            let y = i * 20;
-            ctx.moveTo(-hoop.rimRadius + (y*0.3), y);
-            ctx.lineTo(hoop.rimRadius - (y*0.3), y);
-          }
+          ctx.ellipse(0, 0, r, r * 0.35, 0, Math.PI, Math.PI * 2);
           ctx.stroke();
 
-          // Cincin Merah Depan
+        } else {
+          // 2. BAGIAN DEPAN (Digambar setelah bola)
+          // Setengah lingkaran depan dari cincin
           ctx.strokeStyle = "#e74c3c";
-          ctx.lineWidth = 6;
+          ctx.lineWidth = 8;
           ctx.beginPath();
-          // Gambar elips untuk cincin (3D feel)
-          ctx.ellipse(0, 0, hoop.rimRadius, hoop.rimRadius * 0.35, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, r, r * 0.35, 0, 0, Math.PI);
+          ctx.stroke();
+
+          // Jaring (Net)
+          ctx.strokeStyle = "rgba(255,255,255,0.85)";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          // Garis vertikal jaring
+          for(let i=0; i<=5; i++) {
+            let x = -r + (i * (r*2)/5);
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x * 0.6, r * 1.8);
+          }
+          // Garis horizontal jaring
+          for(let i=1; i<=3; i++) {
+            let y = i * (r*1.8)/4;
+            let w = r - (i * r * 0.1);
+            ctx.moveTo(-w, y);
+            ctx.lineTo(w, y);
+          }
           ctx.stroke();
         }
         ctx.restore();
@@ -515,7 +437,7 @@
 
         const r = ball.radius;
 
-        // Base color & shadow
+        // Base gradient
         const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
         grad.addColorStop(0, "#ff8e53");
         grad.addColorStop(0.7, "#d95c14");
@@ -525,11 +447,11 @@
         ctx.arc(0, 0, r, 0, Math.PI*2);
         ctx.fillStyle = grad;
         ctx.fill();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.strokeStyle = "#222";
         ctx.stroke();
 
-        // Garis-garis basket
+        // Garis tekstur bola basket
         ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(0, -r); ctx.lineTo(0, r); ctx.stroke();
         ctx.beginPath(); ctx.arc(-r*0.6, 0, r*0.9, -Math.PI*0.35, Math.PI*0.35); ctx.stroke();
@@ -539,7 +461,7 @@
       }
 
       function spawnParticles(x, y) {
-        for(let i=0; i<20; i++) {
+        for(let i=0; i<25; i++) {
           particles.push({
             x: x, y: y,
             vx: (Math.random() - 0.5) * 15,
@@ -554,36 +476,37 @@
         for(let i = particles.length - 1; i >= 0; i--) {
           let p = particles[i];
           p.x += p.vx; p.y += p.vy;
-          p.vy += 0.5; // gravitasi partikel
+          p.vy += 0.4; // Gravitasi partikel
           p.life -= 0.02;
           
           if(p.life <= 0) particles.splice(i, 1);
           else {
             ctx.globalAlpha = p.life;
             ctx.fillStyle = p.color;
-            ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(p.x, p.y, 4.5, 0, Math.PI*2); ctx.fill();
             ctx.globalAlpha = 1.0;
           }
         }
       }
 
-
-      // --- MAIN LOOP ---
+      // --- MAIN ANIMATION LOOP ---
       let lastFrame = performance.now();
-      const gravity = 0.7;
-      const groundY = height * 1.5; // Lantai maya berada di bawah layar
+      const gravity = 0.8;
 
       function loop(time) {
         const dt = Math.min((time - lastFrame) / 16.66, 2);
         lastFrame = time;
         ctx.clearRect(0, 0, width, height);
 
-        // Posisi ring maya di dunia
+        // Posisi Ring di dunia 3D (Tengah atas)
         const hoopWorldX = width / 2;
-        const hoopWorldY = height * 0.2; // 20% dari atas layar
+        const hoopWorldY = height * 0.18; 
         const hoopProj = project(hoopWorldX, hoopWorldY, hoop.z);
+        
+        // Batas lantai (Tepat di bawah layar, dikurangi jari-jari bola agar terlihat memantul)
+        const groundY = height - (ball.radius * project(ball.x, ball.y, Math.max(0, ball.z)).scale);
 
-        // 1. PHYSICS UPDATE
+        // 1. UPDATE FISIKA
         if (!ball.dragging) {
           const prevZ = ball.z;
           
@@ -593,69 +516,71 @@
           ball.z += ball.vz * dt;
           ball.rotation += (ball.vx * 0.02) * dt;
 
-          // Cek tabrakan dengan papan / masuk ring (Hanya saat bola sedang menjauh/vz > 0)
+          // Cek tabrakan dengan ring (Hanya saat bola sedang menuju ke dalam layar)
           if (ball.vz > 0 && prevZ <= hoop.z && ball.z > hoop.z) {
-             // Proyeksikan posisi bola di kedalaman ring
-             // Apakah posisinya masuk jaring?
              const dx = ball.x - hoopWorldX;
              const dy = ball.y - hoopWorldY;
              const dist = Math.hypot(dx, dy);
 
-             if (dist < hoop.rimRadius * 1.5 && dy < 20) {
+             if (dist < hoop.rimRadius) {
                // MASUK (SWISH!)
                score += 2;
-               ball.isSwished = true;
-               ball.vx *= 0.1; 
-               ball.vy = Math.abs(ball.vy) * 0.3; // Jatuh lurus ke bawah
-               ball.vz = 0; // Berhenti menjauh
+               ball.vx *= 0.2; 
+               ball.vy = Math.abs(ball.vy) * 0.5; // Jatuh lurus ke bawah
+               ball.vz *= 0.1; // Hampir berhenti menjauh
                
                spawnParticles(hoopProj.sx, hoopProj.sy);
-               floatTexts.push({ x: hoopProj.sx, y: hoopProj.sy - 50, life: 1.0, text: "+2 POINTS!" });
+               floatTexts.push({ x: hoopProj.sx, y: hoopProj.sy - 40, life: 1.0, text: "+2 POINTS!" });
              } 
-             else if (Math.abs(dx) < hoop.width/2 && dy < 0 && dy > -hoop.height) {
-               // KENA PAPAN (BACKBOARD)
-               ball.vz *= -0.6; // Memantul kembali ke arah layar
-               ball.vx *= 0.5;
-               ball.vy *= 0.8;
+             else if (dist < hoop.rimRadius + (ball.radius*0.8)) {
+               // KENA BESI RING (Meleset / Memantul)
+               ball.vz *= -0.7; // Memantul kembali ke arah layar (menuju user)
+               ball.vy *= -0.6;
+               ball.vx += (Math.random() - 0.5) * 15; // Pantulan liar
              }
           }
 
-          // Pantulan Lantai
+          // Pantulan Lantai (Cegah bola hilang ke bawah layar)
           if (ball.y > groundY) {
             ball.y = groundY;
-            ball.vy *= -0.6;
-            ball.vx *= 0.8;
-            ball.vz *= 0.8;
+            ball.vy *= -0.65; // Efek pantulan bola
+            ball.vx *= 0.85;  // Gesekan lantai
             if (Math.abs(ball.vy) < 2) ball.vy = 0;
           }
+          
+          // Pantulan Dinding Kiri & Kanan
+          if (ball.x < 0) { ball.x = 0; ball.vx *= -0.7; }
+          if (ball.x > width) { ball.x = width; ball.vx *= -0.7; }
 
-          // Batas Kiri Kanan
-          if (ball.x < -200 || ball.x > width + 200) ball.vx *= -1;
-
-          // Menggulir bola kembali ke pengguna perlahan jika sudah jatuh
-          if (ball.y >= groundY - 10 && Math.abs(ball.vy) < 1) {
-            if (ball.z > 0) ball.vz -= 1.0 * dt; // Bola menggelinding mendekat
-            else if (ball.z < 0) { ball.z = 0; ball.vz = 0; ball.vx *= 0.9; }
+          // SISTEM PENGEMBALIAN BOLA (Bola menggelinding mendekat ke user secara otomatis)
+          if (ball.y >= groundY - 10 && Math.abs(ball.vy) < 1.5) {
+            if (ball.z > 0) {
+                ball.vz -= 0.8 * dt; // Tarik perlahan ke depan (z menurun)
+            } else if (ball.z < 0) {
+                // Hentikan bola saat sudah di depan layar
+                ball.z = 0; 
+                ball.vz = 0; 
+                ball.vx *= 0.9; 
+            }
           }
         }
 
-        // 2. RENDERING (Painter's Algorithm untuk efek 3D)
+        // 2. RENDERING (Menciptakan Ilusi 3D dengan Painter's Algorithm)
         const ballProj = project(ball.x, ball.y, Math.max(0, ball.z));
 
-        // Gambar Papan (Selalu di belakang)
-        drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, false);
-
         if (ball.z > hoop.z) {
-          // Bola sudah melewati ring -> Gambar Bola DULU, lalu Jaring/Cincin di DEPAN bola
-          drawBasketball(ballProj.sx, ballProj.sy, ballProj.scale);
-          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, true);
+          // Bola sudah melewati ring -> Gambar bagian belakang cincin DULU, lalu bola, lalu bagian depan cincin+jaring
+          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, false); // Belakang
+          drawBasketball(ballProj.sx, ballProj.sy, ballProj.scale);  // Bola
+          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, true);  // Depan
         } else {
-          // Bola masih di depan ring -> Gambar Jaring DULU, lalu Bola di DEPAN jaring
-          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, true);
+          // Bola masih di depan ring -> Gambar seluruh ring DULU, baru bola di paling depan
+          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, false); 
+          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, true);  
           drawBasketball(ballProj.sx, ballProj.sy, ballProj.scale);
         }
 
-        // 3. GAMBAR EFEK & SCORE
+        // 3. GAMBAR EFEK PARTIKEL & SKOR TULISAN MENGAMBANG
         updateParticles();
         
         for(let i = floatTexts.length - 1; i >= 0; i--) {
@@ -665,14 +590,18 @@
           else {
             ctx.globalAlpha = t.life;
             ctx.fillStyle = "#e74c3c";
-            ctx.font = "bold 32px sans-serif";
+            ctx.font = "900 36px sans-serif";
             ctx.textAlign = "center";
+            // Shadow tipis untuk teks
+            ctx.shadowColor = "rgba(255,255,255,0.8)";
+            ctx.shadowBlur = 4;
             ctx.fillText(t.text, t.x, t.y);
+            ctx.shadowBlur = 0; // Reset
             ctx.globalAlpha = 1.0;
           }
         }
 
-        // Teks Score di Pojok Kanan Atas
+        // Teks Score Utama
         ctx.fillStyle = "#111";
         ctx.font = "bold 24px monospace";
         ctx.textAlign = "right";
