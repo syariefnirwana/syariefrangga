@@ -1,279 +1,144 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Syarief Rangga</title>
-
+  <title>Syarief Rangga Nirwana</title>
+  
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap');
+    /* Mengimpor font Courier Prime untuk nuansa mesin tik / vintage */
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-    /* =========================
-       RESET
-    ========================= */
+    :root {
+      --black: #111111;
+      --white: #f5f5f5; /* Off-white seperti kertas tua */
+      --border-thick: 4px;
+    }
 
+    /* Reset Dasar */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
+      background-color: var(--white);
+      color: var(--black);
+      font-family: 'Courier Prime', monospace; /* Font monospace klasik */
       min-height: 100vh;
-      min-height: 100svh;
-
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-
-      padding: clamp(20px, 5vw, 50px);
-
-      background: #f4f4f4;
-      color: #111;
-
-      font-family: "Comic Neue", sans-serif;
-
-      /* Tekstur titik ala kartun jadul */
-      background-image:
-        radial-gradient(#111 0.6px, transparent 0.6px);
-      background-size: 7px 7px;
-
-      overflow-x: hidden;
-    }
-
-    /* =========================
-       CONTAINER
-    ========================= */
-
-    .container {
-      width: 100%;
-      max-width: 700px;
-
-      margin: auto;
-    }
-
-    /* =========================
-       MAIN CARD
-    ========================= */
-
-    .main {
-      width: 100%;
-
-      background: #fff;
-
-      border: clamp(3px, 0.6vw, 5px) solid #111;
-      border-radius: clamp(12px, 3vw, 18px);
-
-      padding: clamp(35px, 8vw, 60px)
-               clamp(20px, 6vw, 50px);
-
-      text-align: center;
-
-      box-shadow:
-        clamp(5px, 1.5vw, 10px)
-        clamp(5px, 1.5vw, 10px)
-        0 #111;
-
-      transform: rotate(-1deg);
-    }
-
-    /* =========================
-       HI
-    ========================= */
-
-    .main h1 {
-      font-family: "Bangers", cursive;
-
-      font-size: clamp(70px, 18vw, 130px);
-
-      line-height: 0.9;
-
-      letter-spacing: clamp(2px, 1vw, 6px);
-
-      margin-bottom: clamp(20px, 5vw, 30px);
-
-      /* Efek tulisan komik */
-      text-shadow:
-        3px 3px 0 #fff,
-        6px 6px 0 #111;
-    }
-
-    /* =========================
-       NAME
-    ========================= */
-
-    .main h3 {
-      display: inline-block;
-
-      max-width: 100%;
-
-      padding: 10px 18px;
-
-      background: #eee;
-
-      border: 3px solid #111;
-      border-radius: 10px;
-
-      font-size: clamp(17px, 4vw, 24px);
-
-      line-height: 1.3;
-
-      font-weight: 700;
-
-      transform: rotate(1deg);
-    }
-
-    /* =========================
-       CONTACT
-    ========================= */
-
-    .contact {
-      margin-top: clamp(30px, 7vw, 45px);
-
-      width: 100%;
-
-      background: #111;
-      color: #fff;
-
-      border: 4px solid #111;
-      border-radius: 15px;
-
-      box-shadow:
-        clamp(4px, 1vw, 7px)
-        clamp(4px, 1vw, 7px)
-        0 #fff;
-
-      transform: rotate(1deg);
-
+      padding: 2rem;
+      position: relative;
       overflow: hidden;
     }
 
-    /* Gmail menjadi link yang bisa ditap */
+    /* Efek Kertas/Film Lama (Noise/Grain buatan) */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: 
+        radial-gradient(var(--black) 1px, transparent 1px),
+        radial-gradient(var(--black) 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      opacity: 0.05;
+      pointer-events: none; /* Agar tidak menghalangi klik */
+      z-index: 100;
+    }
 
-    .contact a {
-      display: block;
-
+    /* Kotak Utama ala Kartun Retro */
+    .container {
+      background-color: var(--white);
+      border: var(--border-thick) solid var(--black);
+      padding: 3rem 2rem;
+      max-width: 600px;
       width: 100%;
+      text-align: center;
+      position: relative;
+      /* Efek bayangan kasar / solid drop shadow */
+      box-shadow: 12px 12px 0px 0px var(--black);
+      /* Sedikit miring untuk kesan tidak kaku */
+      transform: rotate(-1deg);
+      transition: transform 0.2s ease-in-out;
+    }
 
-      padding: clamp(18px, 5vw, 25px);
+    .container:hover {
+      transform: rotate(1deg);
+    }
 
-      color: #fff;
-
-      text-decoration: none;
-
-      font-size: clamp(15px, 4vw, 19px);
-
+    .main h1 {
+      font-size: 4rem;
+      text-transform: uppercase;
       font-weight: 700;
-
-      transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
+      margin-bottom: 0.5rem;
+      letter-spacing: -2px;
+      line-height: 1;
+      /* Garis bawah tebal */
+      border-bottom: var(--border-thick) solid var(--black);
+      display: inline-block;
+      padding-bottom: 0.5rem;
     }
 
-    /* Hover desktop */
-
-    .contact a:hover {
-      background: #fff;
-      color: #111;
+    .main h3 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-top: 1.5rem;
+      margin-bottom: 2rem;
     }
 
-    /* Tap / klik */
-
-    .contact a:active {
-      transform: scale(0.97);
+    .contact {
+      border-top: 2px dashed var(--black);
+      padding-top: 1.5rem;
     }
 
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 480px) {
-
-      body {
-        padding: 20px 15px;
-      }
-
-      .main {
-        padding: 40px 18px;
-      }
-
-      .main h3 {
-        width: 100%;
-      }
-
-      .contact {
-        margin-top: 30px;
-      }
+    .contact p {
+      font-size: 1.2rem;
+      font-weight: 700;
     }
 
-    /* =========================
-       TABLET
-    ========================= */
-
-    @media (min-width: 481px) and (max-width: 900px) {
-
-      .container {
-        max-width: 650px;
-      }
+    /* Gaya interaktif untuk link/teks email */
+    .email-link {
+      color: var(--white);
+      background-color: var(--black);
+      padding: 0.5rem 1rem;
+      display: inline-block;
+      margin-top: 0.5rem;
+      text-decoration: none;
+      border: 2px solid var(--black);
+      transition: all 0.2s ease;
     }
 
-    /* =========================
-       REDUCE MOTION
-       Untuk pengguna yang
-       mematikan animasi perangkat
-    ========================= */
-
-    @media (prefers-reduced-motion: reduce) {
-
-      html {
-        scroll-behavior: auto;
-      }
-
-      .contact a {
-        transition: none;
-      }
+    .email-link:hover {
+      background-color: var(--white);
+      color: var(--black);
+      box-shadow: 4px 4px 0px 0px var(--black);
+      transform: translate(-4px, -4px);
     }
   </style>
 </head>
-
 <body>
 
-  <main class="container">
-
-    <!-- INTRO -->
-
-    <section class="main">
-
+  <div class="container">
+    <div class="main">
       <h1>Hi!</h1>
-
-      <h3>
-        Saya, Syarief Rangga Nirwana
-      </h3>
-
-    </section>
-
-
-    <!-- CONTACT -->
-
-    <section class="contact">
-
-      <a
-        href="mailto:syariefnirwana35@gmail.com"
-        aria-label="Kirim email ke Syarief Rangga"
-      >
-        ✉ Gmail : syariefnirwana35@gmail.com
+      <h3>Saya, Syarief Rangga Nirwana.</h3>
+    </div>
+    
+    <div class="contact">
+      <p>Kirimkan Surat (Elektronik):</p>
+      <a href="mailto:syariefnirwana35@gmail.com" class="email-link">
+        syariefnirwana35@gmail.com
       </a>
-
-    </section>
-
-  </main>
+    </div>
+  </div>
 
 </body>
 </html>
