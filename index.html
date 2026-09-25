@@ -3,7 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Syarief Rangga</title>
 
@@ -21,11 +24,19 @@
       user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
+      -ms-user-select: none;
+
       -webkit-user-drag: none;
     }
 
+
+    /* =====================================================
+       VIEWPORT
+    ===================================================== */
+
     html,
     body {
+
       width: 100%;
       height: 100%;
 
@@ -34,11 +45,15 @@
       overscroll-behavior: none;
     }
 
+
     body {
+
       position: fixed;
+
       inset: 0;
 
       background: #f4f4f4;
+
       color: #111;
 
       font-family:
@@ -52,9 +67,288 @@
       touch-action: none;
 
       background-image:
-        radial-gradient(#111 0.6px, transparent 0.6px);
+        radial-gradient(
+          #111 0.6px,
+          transparent 0.6px
+        );
 
       background-size: 7px 7px;
+    }
+
+
+    /* =====================================================
+       MAIN WEBSITE
+    ===================================================== */
+
+    .website {
+
+      position: absolute;
+
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      padding:
+        clamp(20px, 5vw, 50px);
+
+      opacity: 0;
+
+      transform:
+        translateY(20px);
+
+      transition:
+        opacity 1s ease,
+        transform 1s ease;
+
+      pointer-events: none;
+
+      z-index: 2;
+    }
+
+
+    .website.show {
+
+      opacity: 1;
+
+      transform:
+        translateY(0);
+
+      pointer-events: auto;
+    }
+
+
+    .container {
+
+      width:
+        min(
+          700px,
+          calc(100vw - 30px)
+        );
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      gap:
+        clamp(
+          25px,
+          5vw,
+          40px
+        );
+    }
+
+
+    /* =====================================================
+       MAIN CARD
+    ===================================================== */
+
+    .main {
+
+      width: 100%;
+
+      background: #fff;
+
+      border:
+        clamp(3px, .6vw, 5px)
+        solid #111;
+
+      border-radius:
+        clamp(12px, 3vw, 18px);
+
+      padding:
+        clamp(30px, 7vw, 60px)
+        clamp(18px, 6vw, 50px);
+
+      text-align: center;
+
+      box-shadow:
+        clamp(5px, 1.5vw, 10px)
+        clamp(5px, 1.5vw, 10px)
+        0 #111;
+
+      transform:
+        rotate(-1deg);
+
+      position: relative;
+
+      z-index: 2;
+    }
+
+
+    .main h1 {
+
+      font-family:
+        Georgia,
+        serif;
+
+      font-size:
+        clamp(
+          70px,
+          18vw,
+          130px
+        );
+
+      line-height: .9;
+
+      margin-bottom:
+        clamp(
+          20px,
+          5vw,
+          30px
+        );
+
+      text-shadow:
+        3px 3px 0 #fff,
+        6px 6px 0 #111;
+    }
+
+
+    .main h3 {
+
+      display: inline-block;
+
+      max-width: 100%;
+
+      padding:
+        10px 18px;
+
+      background: #eee;
+
+      border:
+        3px solid #111;
+
+      border-radius: 10px;
+
+      font-size:
+        clamp(
+          17px,
+          4vw,
+          24px
+        );
+
+      line-height: 1.3;
+
+      font-weight: 700;
+
+      transform:
+        rotate(1deg);
+    }
+
+
+    /* =====================================================
+       CONTACT
+    ===================================================== */
+
+    .contact {
+
+      width: 100%;
+
+      background: #111;
+
+      border:
+        4px solid #111;
+
+      border-radius: 15px;
+
+      box-shadow:
+        6px 6px 0 #fff;
+
+      transform:
+        rotate(1deg);
+
+      overflow: hidden;
+
+      position: relative;
+
+      z-index: 2;
+    }
+
+
+    .contact a {
+
+      display: block;
+
+      width: 100%;
+
+      padding:
+        clamp(
+          18px,
+          5vw,
+          25px
+        );
+
+      color: #fff;
+
+      text-decoration: none;
+
+      text-align: center;
+
+      font-size:
+        clamp(
+          15px,
+          4vw,
+          19px
+        );
+
+      font-weight: 700;
+
+      transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+
+      pointer-events: auto;
+    }
+
+
+    .contact a:hover {
+
+      background: #fff;
+
+      color: #111;
+    }
+
+
+    .contact a:active {
+
+      transform:
+        scale(.97);
+    }
+
+
+    /* =====================================================
+       FULLSCREEN FOOTBALL CANVAS
+    ===================================================== */
+
+    #footballCanvas {
+
+      position: fixed;
+
+      inset: 0;
+
+      width: 100vw;
+      height: 100vh;
+
+      width: 100dvw;
+      height: 100dvh;
+
+      display: block;
+
+      z-index: 10;
+
+      pointer-events: auto;
+
+      touch-action: none;
+
+      cursor: default;
     }
 
 
@@ -63,25 +357,32 @@
     ===================================================== */
 
     .loading-screen {
+
       position: fixed;
+
       inset: 0;
 
       z-index: 9999;
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
       background: #f4f4f4;
 
       transition:
-        opacity 0.8s ease,
-        visibility 0.8s ease;
+        opacity .8s ease,
+        visibility .8s ease;
     }
 
+
     .loading-screen.hide {
+
       opacity: 0;
+
       visibility: hidden;
+
       pointer-events: none;
     }
 
@@ -91,16 +392,25 @@
     ===================================================== */
 
     .skeleton {
-      width: min(700px, 85vw);
+
+      width:
+        min(
+          700px,
+          85vw
+        );
 
       display: flex;
+
       flex-direction: column;
+
       align-items: center;
 
       gap: 25px;
     }
 
+
     .skeleton-box {
+
       position: relative;
 
       overflow: hidden;
@@ -110,7 +420,9 @@
       border-radius: 10px;
     }
 
+
     .skeleton-box::after {
+
       content: "";
 
       position: absolute;
@@ -133,21 +445,39 @@
         skeleton-loading 1.4s infinite;
     }
 
+
     .skeleton-title {
+
       width: 180px;
       height: 90px;
+
       border-radius: 20px;
     }
 
+
     .skeleton-name {
-      width: min(400px, 70vw);
+
+      width:
+        min(
+          400px,
+          70vw
+        );
+
       height: 45px;
     }
 
+
     .skeleton-contact {
-      width: min(500px, 80vw);
+
+      width:
+        min(
+          500px,
+          80vw
+        );
+
       height: 65px;
     }
+
 
     @keyframes skeleton-loading {
 
@@ -158,7 +488,6 @@
       100% {
         left: 150%;
       }
-
     }
 
 
@@ -167,27 +496,35 @@
     ===================================================== */
 
     .hello-screen {
+
       position: fixed;
+
       inset: 0;
 
       z-index: 9998;
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
       background: #f4f4f4;
 
       opacity: 0;
+
       visibility: hidden;
 
       pointer-events: none;
     }
 
+
     .hello-screen.show {
+
       opacity: 1;
+
       visibility: visible;
     }
+
 
     .hello-text {
 
@@ -200,11 +537,16 @@
         sans-serif;
 
       font-size:
-        clamp(60px, 16vw, 150px);
+        clamp(
+          60px,
+          16vw,
+          150px
+        );
 
       font-weight: 400;
 
-      letter-spacing: -0.045em;
+      letter-spacing:
+        -.045em;
 
       white-space: nowrap;
 
@@ -216,50 +558,68 @@
         translateY(12px)
         scale(.98);
 
-      filter: blur(4px);
+      filter:
+        blur(4px);
     }
+
 
     .hello-screen.show .hello-text {
 
       animation:
         hello-appear
         .8s
-        cubic-bezier(.16,1,.3,1)
+        cubic-bezier(
+          .16,
+          1,
+          .3,
+          1
+        )
         forwards;
     }
+
 
     @keyframes hello-appear {
 
       0% {
+
         opacity: 0;
 
         transform:
           translateY(12px)
           scale(.98);
 
-        filter: blur(4px);
+        filter:
+          blur(4px);
       }
 
       100% {
+
         opacity: 1;
 
         transform:
           translateY(0)
           scale(1);
 
-        filter: blur(0);
+        filter:
+          blur(0);
       }
-
     }
+
 
     .hello-screen.hide {
 
       animation:
         hello-exit
         .8s
-        cubic-bezier(.4,0,1,1)
+        cubic-bezier(
+          .4,
+          0,
+          1,
+          1
+        )
         forwards;
     }
+
 
     @keyframes hello-exit {
 
@@ -268,288 +628,11 @@
       }
 
       to {
+
         opacity: 0;
+
         visibility: hidden;
       }
-
-    }
-
-
-    /* =====================================================
-       WEBSITE
-    ===================================================== */
-
-    .website {
-
-      position: absolute;
-      inset: 0;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      padding:
-        clamp(20px,5vw,50px);
-
-      opacity: 0;
-
-      transform: translateY(20px);
-
-      transition:
-        opacity 1s ease,
-        transform 1s ease;
-
-      pointer-events: none;
-    }
-
-    .website.show {
-
-      opacity: 1;
-
-      transform: translateY(0);
-
-      pointer-events: auto;
-    }
-
-    .container {
-
-      position: relative;
-
-      width: min(700px, calc(100vw - 30px));
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      gap: 35px;
-    }
-
-
-    /* =====================================================
-       MAIN CARD
-    ===================================================== */
-
-    .main {
-
-      width: 100%;
-
-      background: #fff;
-
-      border:
-        clamp(3px,.6vw,5px)
-        solid #111;
-
-      border-radius:
-        clamp(12px,3vw,18px);
-
-      padding:
-        clamp(30px,7vw,60px)
-        clamp(18px,6vw,50px);
-
-      text-align: center;
-
-      box-shadow:
-        clamp(5px,1.5vw,10px)
-        clamp(5px,1.5vw,10px)
-        0 #111;
-
-      transform: rotate(-1deg);
-
-      position: relative;
-
-      z-index: 5;
-    }
-
-    .main h1 {
-
-      font-family:
-        Georgia,
-        serif;
-
-      font-size:
-        clamp(70px,18vw,130px);
-
-      line-height: .9;
-
-      margin-bottom:
-        clamp(20px,5vw,30px);
-
-      text-shadow:
-        3px 3px 0 #fff,
-        6px 6px 0 #111;
-    }
-
-    .main h3 {
-
-      display: inline-block;
-
-      max-width: 100%;
-
-      padding: 10px 18px;
-
-      background: #eee;
-
-      border: 3px solid #111;
-
-      border-radius: 10px;
-
-      font-size:
-        clamp(17px,4vw,24px);
-
-      line-height: 1.3;
-
-      font-weight: 700;
-
-      transform: rotate(1deg);
-    }
-
-
-    /* =====================================================
-       FOOTBALL AREA
-    ===================================================== */
-
-    .ball-area {
-
-      position: relative;
-
-      width: min(100%, 650px);
-
-      height: clamp(120px,22vw,180px);
-
-      overflow: hidden;
-
-      border-left: 3px solid #111;
-      border-right: 3px solid #111;
-
-      background: rgba(255,255,255,.25);
-
-      z-index: 10;
-
-      touch-action: none;
-    }
-
-    .ball-area::before {
-
-      content: "";
-
-      position: absolute;
-
-      left: 0;
-      right: 0;
-      bottom: 0;
-
-      height: 3px;
-
-      background: #111;
-    }
-
-    .ball-hint {
-
-      position: absolute;
-
-      left: 50%;
-      top: 12px;
-
-      transform: translateX(-50%);
-
-      font-size: 11px;
-
-      font-weight: 700;
-
-      letter-spacing: .08em;
-
-      opacity: .35;
-
-      white-space: nowrap;
-
-      pointer-events: none;
-    }
-
-
-    /* =====================================================
-       CANVAS
-    ===================================================== */
-
-    #footballCanvas {
-
-      position: absolute;
-
-      inset: 0;
-
-      width: 100%;
-      height: 100%;
-
-      display: block;
-
-      touch-action: none;
-
-      cursor: grab;
-    }
-
-    #footballCanvas:active {
-      cursor: grabbing;
-    }
-
-
-    /* =====================================================
-       CONTACT
-    ===================================================== */
-
-    .contact {
-
-      width: 100%;
-
-      background: #111;
-
-      border: 4px solid #111;
-
-      border-radius: 15px;
-
-      box-shadow:
-        6px 6px 0 #fff;
-
-      transform: rotate(1deg);
-
-      overflow: hidden;
-
-      z-index: 5;
-    }
-
-    .contact a {
-
-      display: block;
-
-      width: 100%;
-
-      padding:
-        clamp(18px,5vw,25px);
-
-      color: #fff;
-
-      text-decoration: none;
-
-      text-align: center;
-
-      font-size:
-        clamp(15px,4vw,19px);
-
-      font-weight: 700;
-
-      transition:
-        background .2s ease,
-        color .2s ease,
-        transform .2s ease;
-    }
-
-    .contact a:hover {
-
-      background: #fff;
-      color: #111;
-    }
-
-    .contact a:active {
-
-      transform: scale(.97);
     }
 
 
@@ -568,21 +651,11 @@
       .container {
 
         width:
-          min(100%, 500px);
-
-        gap: 25px;
+          min(
+            100%,
+            500px
+          );
       }
-
-      .ball-area {
-
-        height: 135px;
-      }
-
-      .ball-hint {
-
-        font-size: 10px;
-      }
-
     }
 
 
@@ -596,13 +669,15 @@
       *::before,
       *::after {
 
-        animation-duration: .01ms !important;
+        animation-duration:
+          .01ms !important;
 
-        animation-iteration-count: 1 !important;
+        animation-iteration-count:
+          1 !important;
 
-        transition-duration: .01ms !important;
+        transition-duration:
+          .01ms !important;
       }
-
     }
 
   </style>
@@ -623,11 +698,17 @@
 
     <div class="skeleton">
 
-      <div class="skeleton-box skeleton-title"></div>
+      <div
+        class="skeleton-box skeleton-title"
+      ></div>
 
-      <div class="skeleton-box skeleton-name"></div>
+      <div
+        class="skeleton-box skeleton-name"
+      ></div>
 
-      <div class="skeleton-box skeleton-contact"></div>
+      <div
+        class="skeleton-box skeleton-contact"
+      ></div>
 
     </div>
 
@@ -652,7 +733,7 @@
 
 
   <!-- ===================================================
-       MAIN WEBSITE
+       WEBSITE
   ==================================================== -->
 
   <main
@@ -661,9 +742,6 @@
   >
 
     <div class="container">
-
-
-      <!-- INTRO -->
 
       <section class="main">
 
@@ -676,23 +754,6 @@
       </section>
 
 
-      <!-- FOOTBALL -->
-
-      <section class="ball-area">
-
-        <div class="ball-hint">
-          SWIPE / DRAG THE BALL
-        </div>
-
-        <canvas
-          id="footballCanvas"
-        ></canvas>
-
-      </section>
-
-
-      <!-- CONTACT -->
-
       <section class="contact">
 
         <a
@@ -704,122 +765,243 @@
 
       </section>
 
-
     </div>
 
   </main>
 
 
+  <!-- ===================================================
+       FULLSCREEN BALL
+  ==================================================== -->
+
+  <canvas
+    id="footballCanvas"
+  ></canvas>
+
+
   <script>
 
     /* =====================================================
-       HELLO ANIMATION
+       INTRO
     ===================================================== */
 
     const loadingScreen =
-      document.getElementById("loadingScreen");
+      document.getElementById(
+        "loadingScreen"
+      );
 
     const helloScreen =
-      document.getElementById("helloScreen");
+      document.getElementById(
+        "helloScreen"
+      );
 
     const helloText =
-      document.getElementById("helloText");
+      document.getElementById(
+        "helloText"
+      );
 
     const website =
-      document.getElementById("website");
+      document.getElementById(
+        "website"
+      );
 
 
-    const message = "Hello!";
+    const helloMessage =
+      "Hello!";
 
-    let textIndex = 0;
+    let helloIndex = 0;
 
 
     function typeHello() {
 
-      if (textIndex < message.length) {
+      if (
+        helloIndex <
+        helloMessage.length
+      ) {
 
         helloText.textContent +=
-          message[textIndex];
+          helloMessage[
+            helloIndex
+          ];
 
-        textIndex++;
+        helloIndex++;
 
         setTimeout(
           typeHello,
           180
         );
-
       }
-
     }
 
 
+    window.addEventListener(
+      "load",
+      () => {
+
+        setTimeout(
+          () => {
+
+            loadingScreen
+              .classList
+              .add("hide");
+
+
+            setTimeout(
+              () => {
+
+                helloScreen
+                  .classList
+                  .add("show");
+
+
+                setTimeout(
+                  () => {
+
+                    typeHello();
+
+                  },
+                  450
+                );
+
+
+                setTimeout(
+                  () => {
+
+                    helloScreen
+                      .classList
+                      .add("hide");
+
+
+                    setTimeout(
+                      () => {
+
+                        website
+                          .classList
+                          .add("show");
+
+                        initializeFootball();
+
+                      },
+                      700
+                    );
+
+                  },
+                  3000
+                );
+
+              },
+              700
+            );
+
+          },
+          1200
+        );
+
+      }
+    );
+
+
     /* =====================================================
-       PAGE INTRO
-    ===================================================== */
-
-    window.addEventListener("load", () => {
-
-      setTimeout(() => {
-
-        loadingScreen.classList.add("hide");
-
-        setTimeout(() => {
-
-          helloScreen.classList.add("show");
-
-          setTimeout(() => {
-
-            typeHello();
-
-          }, 450);
-
-          setTimeout(() => {
-
-            helloScreen.classList.add("hide");
-
-            setTimeout(() => {
-
-              website.classList.add("show");
-
-              initializeFootball();
-
-            }, 700);
-
-          }, 3000);
-
-        }, 700);
-
-      }, 1200);
-
-    });
-
-
-    /* =====================================================
-       FOOTBALL PHYSICS
+       FULLSCREEN FOOTBALL PHYSICS
     ===================================================== */
 
     function initializeFootball() {
 
       const canvas =
-        document.getElementById("footballCanvas");
-
-      const area =
-        document.querySelector(".ball-area");
+        document.getElementById(
+          "footballCanvas"
+        );
 
       const ctx =
-        canvas.getContext("2d");
+        canvas.getContext(
+          "2d"
+        );
 
+
+      /* ===================================================
+         VIEWPORT
+      =================================================== */
 
       let width = 0;
       let height = 0;
       let dpr = 1;
 
 
-      /* ---------------------------------------------------
+      function resize() {
+
+        width =
+          window.innerWidth;
+
+        height =
+          window.innerHeight;
+
+
+        dpr =
+          Math.min(
+            window.devicePixelRatio || 1,
+            2
+          );
+
+
+        canvas.width =
+          width * dpr;
+
+        canvas.height =
+          height * dpr;
+
+
+        canvas.style.width =
+          width + "px";
+
+        canvas.style.height =
+          height + "px";
+
+
+        ctx.setTransform(
+          dpr,
+          0,
+          0,
+          dpr,
+          0,
+          0
+        );
+
+
+        if (
+          ball.initialized
+        ) {
+
+          ball.x =
+            Math.max(
+              ball.radius,
+              Math.min(
+                width -
+                ball.radius,
+                ball.x
+              )
+            );
+
+
+          ball.y =
+            Math.max(
+              ball.radius,
+              Math.min(
+                height -
+                ball.radius,
+                ball.y
+              )
+            );
+        }
+      }
+
+
+      /* ===================================================
          BALL
-      --------------------------------------------------- */
+      =================================================== */
 
       const ball = {
+
+        initialized: false,
 
         x: 0,
         y: 0,
@@ -827,7 +1009,10 @@
         vx: 0,
         vy: 0,
 
-        radius: 30,
+        radius:
+          window.innerWidth < 500
+            ? 27
+            : 32,
 
         rotation: 0,
 
@@ -850,74 +1035,7 @@
 
         dragVX: 0,
         dragVY: 0
-
       };
-
-
-      /* ---------------------------------------------------
-         RESIZE
-      --------------------------------------------------- */
-
-      function resize() {
-
-        const rect =
-          area.getBoundingClientRect();
-
-        dpr =
-          Math.min(
-            window.devicePixelRatio || 1,
-            2
-          );
-
-        width = rect.width;
-        height = rect.height;
-
-        canvas.width =
-          width * dpr;
-
-        canvas.height =
-          height * dpr;
-
-        canvas.style.width =
-          width + "px";
-
-        canvas.style.height =
-          height + "px";
-
-        ctx.setTransform(
-          dpr,
-          0,
-          0,
-          dpr,
-          0,
-          0
-        );
-
-
-        /*
-          Pastikan bola tetap berada
-          di dalam area ketika resize.
-        */
-
-        ball.x =
-          Math.max(
-            ball.radius,
-            Math.min(
-              width - ball.radius,
-              ball.x || width / 2
-            )
-          );
-
-        ball.y =
-          Math.max(
-            ball.radius,
-            Math.min(
-              height - ball.radius,
-              ball.y || height / 2
-            )
-          );
-
-      }
 
 
       resize();
@@ -929,12 +1047,409 @@
 
 
       /* ===================================================
+         START POSITION
+      =================================================== */
+
+      ball.x =
+        width * .5;
+
+      ball.y =
+        height * .55;
+
+
+      /*
+        Kecepatan awal kecil.
+      */
+
+      ball.vx = 1.6;
+
+      ball.vy = .8;
+
+      ball.initialized = true;
+
+
+      /* ===================================================
+         IDLE SYSTEM
+      =================================================== */
+
+      let lastInteraction =
+        performance.now();
+
+      let idleMode = false;
+
+
+      const IDLE_DELAY =
+        15000;
+
+
+      /*
+        Kecepatan ketika bola
+        berjalan sendiri.
+      */
+
+      const IDLE_SPEED =
+        2.0;
+
+
+      function resetIdleTimer() {
+
+        lastInteraction =
+          performance.now();
+
+        idleMode = false;
+      }
+
+
+      function enterIdleMode() {
+
+        idleMode = true;
+
+
+        /*
+          Pertahankan arah bola,
+          tetapi normalkan kecepatannya.
+
+          Jadi bola tidak tiba-tiba
+          mengubah arah ketika masuk
+          mode idle.
+        */
+
+        const speed =
+          Math.sqrt(
+            ball.vx * ball.vx +
+            ball.vy * ball.vy
+          );
+
+
+        if (speed < .001) {
+
+          /*
+            Kalau bola benar-benar
+            berhenti, berikan arah
+            horizontal kecil.
+          */
+
+          ball.vx =
+            IDLE_SPEED;
+
+          ball.vy =
+            IDLE_SPEED * .35;
+
+        } else {
+
+          ball.vx =
+            ball.vx /
+            speed *
+            IDLE_SPEED;
+
+          ball.vy =
+            ball.vy /
+            speed *
+            IDLE_SPEED;
+        }
+
+      }
+
+
+      /* ===================================================
+         POINTER DOWN
+      =================================================== */
+
+      canvas.addEventListener(
+        "pointerdown",
+        (event) => {
+
+          const rect =
+            canvas.getBoundingClientRect();
+
+
+          const px =
+            event.clientX -
+            rect.left;
+
+
+          const py =
+            event.clientY -
+            rect.top;
+
+
+          const dx =
+            px -
+            ball.x;
+
+
+          const dy =
+            py -
+            ball.y;
+
+
+          const distance =
+            Math.sqrt(
+              dx * dx +
+              dy * dy
+            );
+
+
+          /*
+            Area sedikit diperbesar
+            agar bola mudah disentuh
+            di HP.
+          */
+
+          if (
+            distance >
+            ball.radius * 1.5
+          ) {
+
+            return;
+          }
+
+
+          resetIdleTimer();
+
+
+          ball.dragging =
+            true;
+
+          ball.pointerId =
+            event.pointerId;
+
+
+          ball.vx = 0;
+          ball.vy = 0;
+
+
+          ball.dragVX = 0;
+          ball.dragVY = 0;
+
+
+          ball.lastX = px;
+          ball.lastY = py;
+
+
+          ball.lastTime =
+            performance.now();
+
+
+          canvas.setPointerCapture(
+            event.pointerId
+          );
+
+        }
+      );
+
+
+      /* ===================================================
+         POINTER MOVE
+      =================================================== */
+
+      canvas.addEventListener(
+        "pointermove",
+        (event) => {
+
+          if (
+            !ball.dragging ||
+            event.pointerId !==
+            ball.pointerId
+          ) {
+
+            return;
+          }
+
+
+          resetIdleTimer();
+
+
+          const rect =
+            canvas.getBoundingClientRect();
+
+
+          const px =
+            event.clientX -
+            rect.left;
+
+
+          const py =
+            event.clientY -
+            rect.top;
+
+
+          const now =
+            performance.now();
+
+
+          const dt =
+            Math.max(
+              now -
+              ball.lastTime,
+              1
+            );
+
+
+          const dx =
+            px -
+            ball.lastX;
+
+
+          const dy =
+            py -
+            ball.lastY;
+
+
+          /*
+            Gerakkan bola mengikuti jari.
+          */
+
+          ball.x =
+            Math.max(
+              ball.radius,
+              Math.min(
+                width -
+                ball.radius,
+                px
+              )
+            );
+
+
+          ball.y =
+            Math.max(
+              ball.radius,
+              Math.min(
+                height -
+                ball.radius,
+                py
+              )
+            );
+
+
+          /*
+            Hitung velocity swipe.
+          */
+
+          ball.dragVX =
+            dx /
+            dt *
+            16;
+
+
+          ball.dragVY =
+            dy /
+            dt *
+            16;
+
+
+          /*
+            Spin mengikuti gerakan.
+          */
+
+          ball.angularVelocity =
+            dx *
+            .025;
+
+
+          ball.rotation +=
+            dx *
+            .025;
+
+
+          ball.lastX = px;
+          ball.lastY = py;
+          ball.lastTime = now;
+
+        }
+      );
+
+
+      /* ===================================================
+         RELEASE
+      =================================================== */
+
+      function releaseBall(
+        event
+      ) {
+
+        if (
+          !ball.dragging ||
+          event.pointerId !==
+          ball.pointerId
+        ) {
+
+          return;
+        }
+
+
+        ball.dragging =
+          false;
+
+
+        resetIdleTimer();
+
+
+        /*
+          Velocity mengikuti
+          kekuatan swipe.
+        */
+
+        ball.vx =
+          ball.dragVX *
+          1.8;
+
+
+        ball.vy =
+          ball.dragVY *
+          1.8;
+
+
+        const maxVelocity =
+          25;
+
+
+        ball.vx =
+          Math.max(
+            -maxVelocity,
+            Math.min(
+              maxVelocity,
+              ball.vx
+            )
+          );
+
+
+        ball.vy =
+          Math.max(
+            -maxVelocity,
+            Math.min(
+              maxVelocity,
+              ball.vy
+            )
+          );
+
+
+        ball.angularVelocity =
+          ball.vx *
+          .025;
+      }
+
+
+      canvas.addEventListener(
+        "pointerup",
+        releaseBall
+      );
+
+
+      canvas.addEventListener(
+        "pointercancel",
+        releaseBall
+      );
+
+
+      /* ===================================================
          FOOTBALL DRAWING
       =================================================== */
 
       function drawFootball() {
 
         ctx.save();
+
 
         ctx.translate(
           ball.x,
@@ -943,17 +1458,84 @@
 
 
         /*
-          Deformasi bola.
+          =================================================
+          SHADOW
 
-          Ketika menghantam dinding:
-          squashX / squashY berubah.
+          PENTING:
 
-          Jadi bukan sekadar scale biasa.
+          Shadow TIDAK ikut rotation bola.
+
+          Jadi shadow selalu berada
+          di bawah bola.
+          =================================================
+        */
+
+        ctx.save();
+
+
+        /*
+          Shadow sedikit lebih jauh
+          ketika bola berada di atas.
+        */
+
+        const shadowOffset =
+          ball.radius *
+          .82;
+
+
+        ctx.translate(
+          0,
+          shadowOffset
+        );
+
+
+        ctx.scale(
+          1.0,
+          .22
+        );
+
+
+        ctx.beginPath();
+
+
+        ctx.ellipse(
+          0,
+          0,
+          ball.radius *
+            .82,
+
+          ball.radius *
+            .42,
+
+          0,
+          0,
+          Math.PI * 2
+        );
+
+
+        ctx.fillStyle =
+          "rgba(0,0,0,.18)";
+
+
+        ctx.fill();
+
+
+        ctx.restore();
+
+
+        /*
+          =================================================
+          BOLA
+
+          Rotation hanya diterapkan
+          ke bola, BUKAN shadow.
+          =================================================
         */
 
         ctx.rotate(
           ball.rotation
         );
+
 
         ctx.scale(
           ball.squashX,
@@ -961,72 +1543,43 @@
         );
 
 
-        /* -------------------------------------------------
-           SHADOW
-        ------------------------------------------------- */
-
-        ctx.save();
-
-        ctx.translate(
-          5,
-          ball.radius * .85
-        );
-
-        ctx.scale(
-          1,
-          .35
-        );
-
-        ctx.beginPath();
-
-        ctx.arc(
-          0,
-          0,
-          ball.radius,
-          0,
-          Math.PI * 2
-        );
-
-        ctx.fillStyle =
-          "rgba(0,0,0,.18)";
-
-        ctx.fill();
-
-        ctx.restore();
-
-
-        /* -------------------------------------------------
+        /* =================================================
            BALL BODY
-        ------------------------------------------------- */
+        ================================================= */
 
         const gradient =
           ctx.createRadialGradient(
+
             -ball.radius * .35,
-            -ball.radius * .4,
-            ball.radius * .1,
+            -ball.radius * .42,
+            ball.radius * .08,
 
             0,
             0,
             ball.radius
           );
 
+
         gradient.addColorStop(
           0,
           "#ffffff"
         );
 
+
         gradient.addColorStop(
-          .7,
+          .68,
           "#eeeeee"
         );
 
+
         gradient.addColorStop(
           1,
-          "#bdbdbd"
+          "#bcbcbc"
         );
 
 
         ctx.beginPath();
+
 
         ctx.arc(
           0,
@@ -1036,27 +1589,28 @@
           Math.PI * 2
         );
 
+
         ctx.fillStyle =
           gradient;
+
 
         ctx.fill();
 
 
-        /*
-          Outline
-        */
+        ctx.lineWidth =
+          2.5;
 
-        ctx.lineWidth = 2.5;
 
         ctx.strokeStyle =
           "#111";
 
+
         ctx.stroke();
 
 
-        /* -------------------------------------------------
-           CLASSIC BLACK PENTAGON
-        ------------------------------------------------- */
+        /* =================================================
+           CENTER PENTAGON
+        ================================================= */
 
         drawPolygon(
           0,
@@ -1070,14 +1624,15 @@
         ctx.fillStyle =
           "#111";
 
+
         ctx.fill();
 
 
-        /* -------------------------------------------------
-           BLACK PANELS
-        ------------------------------------------------- */
+        /* =================================================
+           PANEL LINES
+        ================================================= */
 
-        const panelAngles = [
+        const angles = [
 
           -Math.PI / 2,
 
@@ -1092,43 +1647,63 @@
         ];
 
 
-        panelAngles.forEach(
+        angles.forEach(
           (angle) => {
 
             const px =
               Math.cos(angle) *
               ball.radius *
-              .63;
+              .64;
+
 
             const py =
               Math.sin(angle) *
               ball.radius *
-              .63;
+              .64;
 
 
             ctx.beginPath();
+
 
             ctx.moveTo(
               0,
               0
             );
 
-            ctx.lineTo(
-              px - Math.cos(angle - .5) * 7,
-              py - Math.sin(angle - .5) * 7
-            );
 
             ctx.lineTo(
-              px + Math.cos(angle - .5) * 7,
-              py + Math.sin(angle - .5) * 7
+              px -
+              Math.cos(
+                angle - .5
+              ) * 7,
+
+              py -
+              Math.sin(
+                angle - .5
+              ) * 7
             );
 
-            ctx.closePath();
+
+            ctx.lineTo(
+              px +
+              Math.cos(
+                angle - .5
+              ) * 7,
+
+              py +
+              Math.sin(
+                angle - .5
+              ) * 7
+            );
+
 
             ctx.strokeStyle =
               "#111";
 
-            ctx.lineWidth = 1.8;
+
+            ctx.lineWidth =
+              1.8;
+
 
             ctx.stroke();
 
@@ -1136,11 +1711,12 @@
         );
 
 
-        /* -------------------------------------------------
+        /* =================================================
            HIGHLIGHT
-        ------------------------------------------------- */
+        ================================================= */
 
         ctx.beginPath();
+
 
         ctx.arc(
           -ball.radius * .32,
@@ -1150,8 +1726,10 @@
           Math.PI * 2
         );
 
+
         ctx.fillStyle =
           "rgba(255,255,255,.85)";
+
 
         ctx.fill();
 
@@ -1171,6 +1749,7 @@
 
         ctx.beginPath();
 
+
         for (
           let i = 0;
           i < sides;
@@ -1184,15 +1763,18 @@
             2 /
             sides;
 
+
           const x =
             cx +
             Math.cos(angle) *
             radius;
 
+
           const y =
             cy +
             Math.sin(angle) *
             radius;
+
 
           if (i === 0) {
 
@@ -1207,515 +1789,43 @@
               x,
               y
             );
-
           }
-
         }
+
 
         ctx.closePath();
-
       }
 
 
       /* ===================================================
-         POINTER / SWIPE
-      =================================================== */
-
-      canvas.addEventListener(
-        "pointerdown",
-        (event) => {
-
-          const rect =
-            canvas.getBoundingClientRect();
-
-          const px =
-            event.clientX -
-            rect.left;
-
-          const py =
-            event.clientY -
-            rect.top;
-
-
-          const dx =
-            px - ball.x;
-
-          const dy =
-            py - ball.y;
-
-
-          const distance =
-            Math.sqrt(
-              dx * dx +
-              dy * dy
-            );
-
-
-          /*
-            Hanya ambil bola jika
-            pointer menyentuh bola.
-          */
-
-          if (
-            distance >
-            ball.radius * 1.4
-          ) {
-
-            return;
-
-          }
-
-
-          ball.dragging = true;
-
-          ball.pointerId =
-            event.pointerId;
-
-          ball.vx = 0;
-          ball.vy = 0;
-
-          ball.dragVX = 0;
-          ball.dragVY = 0;
-
-          ball.lastX = px;
-          ball.lastY = py;
-
-          ball.lastTime =
-            performance.now();
-
-
-          canvas.setPointerCapture(
-            event.pointerId
-          );
-
-        }
-      );
-
-
-      canvas.addEventListener(
-        "pointermove",
-        (event) => {
-
-          if (
-            !ball.dragging ||
-            event.pointerId !== ball.pointerId
-          ) {
-
-            return;
-
-          }
-
-
-          const rect =
-            canvas.getBoundingClientRect();
-
-          const px =
-            event.clientX -
-            rect.left;
-
-          const py =
-            event.clientY -
-            rect.top;
-
-
-          const now =
-            performance.now();
-
-          const dt =
-            Math.max(
-              now - ball.lastTime,
-              1
-            );
-
-
-          const dx =
-            px - ball.lastX;
-
-          const dy =
-            py - ball.lastY;
-
-
-          ball.x =
-            Math.max(
-              ball.radius,
-              Math.min(
-                width - ball.radius,
-                px
-              )
-            );
-
-          ball.y =
-            Math.max(
-              ball.radius,
-              Math.min(
-                height - ball.radius,
-                py
-              )
-            );
-
-
-          /*
-            Kecepatan swipe
-          */
-
-          ball.dragVX =
-            dx / dt * 16;
-
-          ball.dragVY =
-            dy / dt * 16;
-
-
-          ball.rotation +=
-            dx * .025;
-
-
-          ball.lastX = px;
-          ball.lastY = py;
-          ball.lastTime = now;
-
-        }
-      );
-
-
-      function releaseBall(event) {
-
-        if (
-          !ball.dragging ||
-          event.pointerId !== ball.pointerId
-        ) {
-
-          return;
-
-        }
-
-
-        ball.dragging = false;
-
-
-        /*
-          Lemparan mengikuti kecepatan
-          swipe terakhir.
-        */
-
-        ball.vx =
-          ball.dragVX * 1.8;
-
-        ball.vy =
-          ball.dragVY * 1.8;
-
-
-        /*
-          Batas maksimum supaya
-          bola tidak terbang terlalu gila.
-        */
-
-        const maxVelocity = 24;
-
-        ball.vx =
-          Math.max(
-            -maxVelocity,
-            Math.min(
-              maxVelocity,
-              ball.vx
-            )
-          );
-
-        ball.vy =
-          Math.max(
-            -maxVelocity,
-            Math.min(
-              maxVelocity,
-              ball.vy
-            )
-          );
-
-
-        ball.angularVelocity =
-          ball.vx * .025;
-
-      }
-
-
-      canvas.addEventListener(
-        "pointerup",
-        releaseBall
-      );
-
-      canvas.addEventListener(
-        "pointercancel",
-        releaseBall
-      );
-
-
-      /* ===================================================
-         PHYSICS
-      =================================================== */
-
-      let lastFrame =
-        performance.now();
-
-
-      function update(time) {
-
-        const dt =
-          Math.min(
-            (time - lastFrame) / 16.6667,
-            2
-          );
-
-        lastFrame = time;
-
-
-        if (!ball.dragging) {
-
-          /*
-            Gravitasi
-          */
-
-          ball.vy +=
-            .16 * dt;
-
-
-          /*
-            Friction udara
-          */
-
-          ball.vx *=
-            Math.pow(.994, dt);
-
-          ball.vy *=
-            Math.pow(.994, dt);
-
-
-          /*
-            Position
-          */
-
-          ball.x +=
-            ball.vx * dt;
-
-          ball.y +=
-            ball.vy * dt;
-
-
-          /*
-            Rotation
-          */
-
-          ball.rotation +=
-            ball.angularVelocity * dt;
-
-          ball.angularVelocity *=
-            Math.pow(.985, dt);
-
-
-          /* -----------------------------------------------
-             LEFT WALL
-          ------------------------------------------------ */
-
-          if (
-            ball.x - ball.radius < 0
-          ) {
-
-            ball.x =
-              ball.radius;
-
-            ball.vx =
-              Math.abs(ball.vx) *
-              .78;
-
-
-            hitWall(
-              "left",
-              Math.abs(ball.vx)
-            );
-
-          }
-
-
-          /* -----------------------------------------------
-             RIGHT WALL
-          ------------------------------------------------ */
-
-          if (
-            ball.x + ball.radius > width
-          ) {
-
-            ball.x =
-              width - ball.radius;
-
-            ball.vx =
-              -Math.abs(ball.vx) *
-              .78;
-
-
-            hitWall(
-              "right",
-              Math.abs(ball.vx)
-            );
-
-          }
-
-
-          /* -----------------------------------------------
-             TOP WALL
-          ------------------------------------------------ */
-
-          if (
-            ball.y - ball.radius < 0
-          ) {
-
-            ball.y =
-              ball.radius;
-
-            ball.vy =
-              Math.abs(ball.vy) *
-              .78;
-
-
-            hitWall(
-              "top",
-              Math.abs(ball.vy)
-            );
-
-          }
-
-
-          /* -----------------------------------------------
-             FLOOR
-          ------------------------------------------------ */
-
-          if (
-            ball.y + ball.radius > height
-          ) {
-
-            ball.y =
-              height - ball.radius;
-
-            ball.vy =
-              -Math.abs(ball.vy) *
-              .76;
-
-
-            /*
-              Sedikit friction ketika
-              menyentuh lantai.
-            */
-
-            ball.vx *= .96;
-
-
-            hitWall(
-              "bottom",
-              Math.abs(ball.vy)
-            );
-
-
-            /*
-              Kalau pantulannya sudah
-              sangat kecil, hentikan.
-            */
-
-            if (
-              Math.abs(ball.vy) < .8
-            ) {
-
-              ball.vy = 0;
-
-            }
-
-          }
-
-        }
-
-
-        /* =================================================
-           SPRING BACK
-        ================================================= */
-
-        ball.squashX +=
-          (
-            ball.targetSquashX -
-            ball.squashX
-          ) *
-          .22 *
-          dt;
-
-        ball.squashY +=
-          (
-            ball.targetSquashY -
-            ball.squashY
-          ) *
-          .22 *
-          dt;
-
-
-        ball.targetSquashX =
-          1;
-
-        ball.targetSquashY =
-          1;
-
-
-        /* =================================================
-           DRAW
-        ================================================= */
-
-        ctx.clearRect(
-          0,
-          0,
-          width,
-          height
-        );
-
-        drawFootball();
-
-
-        requestAnimationFrame(
-          update
-        );
-
-      }
-
-
-      requestAnimationFrame(
-        update
-      );
-
-
-      /* ===================================================
-         WALL IMPACT DEFORMATION
+         WALL COLLISION
       =================================================== */
 
       function hitWall(
         side,
-        impactVelocity
+        velocity
       ) {
 
-        /*
-          Hanya deformasi kalau
-          benturannya cukup kuat.
-        */
-
         if (
-          impactVelocity < 1
+          velocity <
+          .7
         ) {
 
           return;
-
         }
 
 
         const strength =
           Math.min(
-            impactVelocity / 18,
+            velocity / 20,
             1
           );
 
 
         /*
-          Bola gepeng ke arah
-          dinding yang ditabrak.
+          Dinding kiri/kanan:
+
+          bola tertekan horizontal.
         */
 
         if (
@@ -1724,13 +1834,23 @@
         ) {
 
           ball.targetSquashX =
-            1 - .22 * strength;
+            1 -
+            .23 *
+            strength;
+
 
           ball.targetSquashY =
-            1 + .14 * strength;
-
+            1 +
+            .14 *
+            strength;
         }
 
+
+        /*
+          Dinding atas/bawah:
+
+          bola tertekan vertikal.
+        */
 
         if (
           side === "top" ||
@@ -1738,17 +1858,20 @@
         ) {
 
           ball.targetSquashX =
-            1 + .14 * strength;
+            1 +
+            .14 *
+            strength;
+
 
           ball.targetSquashY =
-            1 - .22 * strength;
-
+            1 -
+            .23 *
+            strength;
         }
 
 
         /*
-          Setelah beberapa frame,
-          kembali ke bentuk normal.
+          Kembalikan bentuk normal.
         */
 
         setTimeout(
@@ -1762,6 +1885,336 @@
         );
 
       }
+
+
+      /* ===================================================
+         PHYSICS LOOP
+      =================================================== */
+
+      let lastFrame =
+        performance.now();
+
+
+      function update(
+        currentTime
+      ) {
+
+        const dt =
+          Math.min(
+            (
+              currentTime -
+              lastFrame
+            ) / 16.6667,
+
+            2
+          );
+
+
+        lastFrame =
+          currentTime;
+
+
+        /*
+          ================================================
+          IDLE CHECK
+          ================================================
+        */
+
+        if (
+          !ball.dragging &&
+          !idleMode &&
+          currentTime -
+          lastInteraction >=
+          IDLE_DELAY
+        ) {
+
+          enterIdleMode();
+        }
+
+
+        /*
+          ================================================
+          MOVEMENT
+
+          TIDAK ADA GRAVITASI.
+          ================================================
+        */
+
+        if (
+          !ball.dragging
+        ) {
+
+          /*
+            Ketika idle:
+
+            speed harus konsisten.
+          */
+
+          if (
+            idleMode
+          ) {
+
+            const speed =
+              Math.sqrt(
+                ball.vx *
+                ball.vx +
+
+                ball.vy *
+                ball.vy
+              );
+
+
+            if (
+              speed > .001
+            ) {
+
+              ball.vx =
+                ball.vx /
+                speed *
+                IDLE_SPEED;
+
+
+              ball.vy =
+                ball.vy /
+                speed *
+                IDLE_SPEED;
+
+            }
+
+          }
+
+
+          ball.x +=
+            ball.vx *
+            dt;
+
+
+          ball.y +=
+            ball.vy *
+            dt;
+
+
+          /*
+            Rotation.
+          */
+
+          ball.rotation +=
+            ball.angularVelocity *
+            dt;
+
+
+          ball.angularVelocity *=
+            Math.pow(
+              .985,
+              dt
+            );
+
+
+          /*
+            Sedikit air resistance
+            ketika bukan idle.
+
+            Idle TIDAK menggunakan
+            friction supaya kecepatannya
+            konsisten.
+          */
+
+          if (
+            !idleMode
+          ) {
+
+            ball.vx *=
+              Math.pow(
+                .996,
+                dt
+              );
+
+
+            ball.vy *=
+              Math.pow(
+                .996,
+                dt
+              );
+          }
+
+
+          /* =============================================
+             LEFT
+          ============================================= */
+
+          if (
+            ball.x -
+            ball.radius <
+            0
+          ) {
+
+            ball.x =
+              ball.radius;
+
+
+            ball.vx =
+              Math.abs(
+                ball.vx
+              ) *
+              .82;
+
+
+            hitWall(
+              "left",
+              Math.abs(
+                ball.vx
+              )
+            );
+          }
+
+
+          /* =============================================
+             RIGHT
+          ============================================= */
+
+          if (
+            ball.x +
+            ball.radius >
+            width
+          ) {
+
+            ball.x =
+              width -
+              ball.radius;
+
+
+            ball.vx =
+              -Math.abs(
+                ball.vx
+              ) *
+              .82;
+
+
+            hitWall(
+              "right",
+              Math.abs(
+                ball.vx
+              )
+            );
+          }
+
+
+          /* =============================================
+             TOP
+          ============================================= */
+
+          if (
+            ball.y -
+            ball.radius <
+            0
+          ) {
+
+            ball.y =
+              ball.radius;
+
+
+            ball.vy =
+              Math.abs(
+                ball.vy
+              ) *
+              .82;
+
+
+            hitWall(
+              "top",
+              Math.abs(
+                ball.vy
+              )
+            );
+          }
+
+
+          /* =============================================
+             BOTTOM
+          ============================================= */
+
+          if (
+            ball.y +
+            ball.radius >
+            height
+          ) {
+
+            ball.y =
+              height -
+              ball.radius;
+
+
+            ball.vy =
+              -Math.abs(
+                ball.vy
+              ) *
+              .82;
+
+
+            hitWall(
+              "bottom",
+              Math.abs(
+                ball.vy
+              )
+            );
+          }
+        }
+
+
+        /* =================================================
+           SQUASH SPRING
+        ================================================= */
+
+        ball.squashX +=
+          (
+            ball.targetSquashX -
+            ball.squashX
+          ) *
+          .22 *
+          dt;
+
+
+        ball.squashY +=
+          (
+            ball.targetSquashY -
+            ball.squashY
+          ) *
+          .22 *
+          dt;
+
+
+        ball.targetSquashX =
+          1;
+
+
+        ball.targetSquashY =
+          1;
+
+
+        /* =================================================
+           RENDER
+        ================================================= */
+
+        ctx.clearRect(
+          0,
+          0,
+          width,
+          height
+        );
+
+
+        drawFootball();
+
+
+        requestAnimationFrame(
+          update
+        );
+      }
+
+
+      requestAnimationFrame(
+        update
+      );
 
     }
 
