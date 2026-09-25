@@ -46,10 +46,9 @@
       width: 100%;
       height: 100%;
       display: flex;
-      align-items: flex-end; 
-      justify-content: center;
+      align-items: center; /* Ini yang membuat elemen berada tepat di tengah secara vertikal */
+      justify-content: center; /* Ini membuat elemen berada di tengah secara horizontal */
       padding: clamp(20px, 5vw, 50px);
-      padding-bottom: 12vh; 
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 1s ease, transform 1s ease;
@@ -187,7 +186,7 @@
     .hello-text { font-size: clamp(60px, 16vw, 150px); font-weight: 400; letter-spacing: -.045em; color: #111; }
 
     @media (max-width: 600px) {
-      .website { padding: 15px; padding-bottom: 5vh; }
+      .website { padding: 15px; } /* Menghapus padding-bottom agar tetap di tengah di HP */
       .container { width: min(100%, 500px); }
     }
   </style>
