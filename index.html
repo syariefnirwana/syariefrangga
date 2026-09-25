@@ -254,7 +254,7 @@
           setTimeout(typeHello, 450);
           setTimeout(() => {
             helloScreen.classList.remove("show");
-            helloScreen.classList.add("hide !important"); // Fix bug hello screen nyangkut
+            helloScreen.classList.add("hide"); // Perbaikan: Menghapus spasi dan !important yang membuat JS error
             setTimeout(() => {
               website.classList.add("show");
               initializeFootball(); // Memanggil game bola pantul original
