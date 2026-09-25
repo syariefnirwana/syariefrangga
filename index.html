@@ -146,9 +146,9 @@
     }
 
     /* =====================================================
-       BASKETBALL CANVAS
+       BOUNCY BALL CANVAS
     ===================================================== */
-    #gameCanvas {
+    #footballCanvas {
       position: fixed;
       inset: 0;
       width: 100vw;
@@ -224,8 +224,8 @@
     </div>
   </main>
 
-  <!-- 3D BASKETBALL CANVAS -->
-  <canvas id="gameCanvas"></canvas>
+  <!-- 2D BOUNCY BALL CANVAS -->
+  <canvas id="footballCanvas"></canvas>
 
 
   <script>
@@ -254,23 +254,32 @@
           setTimeout(typeHello, 450);
           setTimeout(() => {
             helloScreen.classList.remove("show");
-            helloScreen.classList.add("hide");
+            helloScreen.classList.add("hide !important"); // Fix bug hello screen nyangkut
             setTimeout(() => {
               website.classList.add("show");
-              initBasketballGame(); // Start the game after UI is ready
+              initializeFootball(); // Memanggil game bola pantul original
             }, 700);
           }, 2500);
         }, 700);
       }, 1200);
     });
 
-    // --- 3D BASKETBALL PHYSICS & GRAPHICS ---
-    function initBasketballGame() {
-      const canvas = document.getElementById("gameCanvas");
+    // --- 2D BOUNCY BALL PHYSICS & GRAPHICS ---
+    function initializeFootball() {
+      const canvas = document.getElementById("footballCanvas");
       const ctx = canvas.getContext("2d");
 
       let width = 0, height = 0, dpr = 1;
-      let focalLength = 400; // Untuk hitungan perspektif 3D
+
+      const ball = {
+        x: 0, y: 0,
+        vx: 1.6, vy: 0.8,
+        radius: window.innerWidth < 500 ? 27 : 32,
+        rotation: 0, angularVelocity: 0,
+        squashX: 1, squashY: 1, targetSquashX: 1, targetSquashY: 1,
+        dragging: false, lastX: 0, lastY: 0, lastTime: 0,
+        dragVX: 0, dragVY: 0
+      };
 
       function resize() {
         width = window.innerWidth;
@@ -280,338 +289,224 @@
         canvas.height = height * dpr;
         canvas.style.width = width + "px";
         canvas.style.height = height + "px";
-        ctx.scale(dpr, dpr);
-        // Sesuaikan perspektif berdasarkan layar
-        focalLength = Math.min(width, height) * 0.8; 
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        
+        ball.x = Math.max(ball.radius, Math.min(width - ball.radius, ball.x || width / 2));
+        ball.y = Math.max(ball.radius, Math.min(height - ball.radius, ball.y || height * 0.55));
       }
       resize();
       window.addEventListener("resize", resize);
 
-      // --- GAME STATE ---
-      let score = 0;
-      let particles = [];
-      let floatTexts = [];
+      let lastInteraction = performance.now();
+      let idleMode = false;
+      const IDLE_DELAY = 15000;
+      const IDLE_SPEED = 2.0;
 
-      // Konfigurasi Ring Basket (Tanpa tiang, hanya ring bulat yang diperbesar)
-      const hoop = {
-        z: 350,        // Jarak kedalaman (Z) ke dalam layar
-        rimRadius: 55, // DIubah: Ring dibuat lebih besar
-      };
-
-      // Konfigurasi Bola (Bergerak di koordinat 3D: x, y, z)
-      const ball = {
-        x: width / 2,
-        y: height - 100,
-        z: 0,
-        vx: 0, vy: 0, vz: 0,
-        radius: 40,    // Ukuran bola saat di depan layar (z=0)
-        rotation: 0,
-        dragging: false,
-        lastX: 0, lastY: 0, lastTime: 0
-      };
-
-      // --- 3D PROJECTION FUNCTION ---
-      // Menerjemahkan koordinat 3D (x,y,z) ke koordinat 2D Layar
-      function project(x, y, z) {
-        // Objek menjauh (z membesar) -> skala mengecil
-        const scale = focalLength / (focalLength + z);
-        const sx = (width / 2) + (x - width / 2) * scale;
-        const sy = (height / 2) + (y - height / 2) * scale;
-        return { sx, sy, scale };
+      function resetIdleTimer() {
+        lastInteraction = performance.now();
+        idleMode = false;
       }
 
-      // --- INTERACTION LOGIC ---
       window.addEventListener("pointerdown", (e) => {
-        // Biarkan pengguna mengeklik tautan email tanpa terganggu
+        // Abaikan jika user mengklik tombol/link email
         if (e.target.tagName === 'A' || e.target.closest('a')) return;
+        
+        const dist = Math.hypot(e.clientX - ball.x, e.clientY - ball.y);
+        // Area klik diperbesar sedikit
+        if (dist > ball.radius * 2) return; 
 
-        const px = e.clientX;
-        const py = e.clientY;
-        
-        // Cari posisi 2D bola saat ini
-        const proj = project(ball.x, ball.y, ball.z);
-        const currentRadius = ball.radius * proj.scale;
-        
-        // Cek apakah klik mengenai bola
-        const dist = Math.hypot(px - proj.sx, py - proj.sy);
-        if (dist < currentRadius * 2.5) { // Toleransi area klik
-          ball.dragging = true;
-          ball.vx = 0; ball.vy = 0; ball.vz = 0;
-          ball.lastX = px; ball.lastY = py;
-          ball.lastTime = performance.now();
-        }
+        resetIdleTimer();
+        ball.dragging = true;
+        ball.vx = 0; ball.vy = 0;
+        ball.dragVX = 0; ball.dragVY = 0;
+        ball.lastX = e.clientX; ball.lastY = e.clientY;
+        ball.lastTime = performance.now();
       });
 
       window.addEventListener("pointermove", (e) => {
         if (!ball.dragging) return;
-        
-        const px = e.clientX;
-        const py = e.clientY;
+        resetIdleTimer();
+
         const now = performance.now();
         const dt = Math.max(now - ball.lastTime, 1);
-        
-        // Tarik bola maju ke depan layar (z=0) saat dipegang
-        ball.x = px;
-        ball.y = py;
-        ball.z = 0; 
+        const dx = e.clientX - ball.lastX;
+        const dy = e.clientY - ball.lastY;
 
-        // Hitung kekuatan swipe
-        ball.vx = ((px - ball.lastX) / dt) * 16;
-        ball.vy = ((py - ball.lastY) / dt) * 16;
-        
-        // Putar bola sesuai gerakan horizontal
-        ball.rotation += ball.vx * 0.05;
-        
-        ball.lastX = px;
-        ball.lastY = py;
+        ball.x = Math.max(ball.radius, Math.min(width - ball.radius, e.clientX));
+        ball.y = Math.max(ball.radius, Math.min(height - ball.radius, e.clientY));
+
+        ball.dragVX = (dx / dt) * 16;
+        ball.dragVY = (dy / dt) * 16;
+        ball.angularVelocity = dx * 0.025;
+        ball.rotation += dx * 0.025;
+
+        ball.lastX = e.clientX;
+        ball.lastY = e.clientY;
         ball.lastTime = now;
       });
 
       window.addEventListener("pointerup", (e) => {
         if (!ball.dragging) return;
         ball.dragging = false;
+        resetIdleTimer();
 
-        // Jika dilempar ke atas (vy negatif), dorong juga ke DALAM layar (vz positif)
-        if (ball.vy < -5) {
-          ball.vz = Math.abs(ball.vy) * 2.2; // Kecepatan menjauh ke dalam layar
-          ball.vy *= 1.4;
-          ball.vx *= 1.2;
-        } else {
-          ball.vz = 0; // Hanya jatuh
-        }
+        ball.vx = ball.dragVX * 1.8;
+        ball.vy = ball.dragVY * 1.8;
+        
+        const maxV = 25;
+        ball.vx = Math.max(-maxV, Math.min(maxV, ball.vx));
+        ball.vy = Math.max(-maxV, Math.min(maxV, ball.vy));
+        ball.angularVelocity = ball.vx * 0.025;
       });
 
-      // --- DRAWING FUNCTIONS ---
-      // Menggambar ring. Dipisah jadi "Belakang" dan "Depan" agar bola bisa lewat di tengahnya.
-      function drawHoop(projScale, screenX, screenY, isFrontLayer) {
-        ctx.save();
-        ctx.translate(screenX, screenY);
-        ctx.scale(projScale, projScale);
-
-        const r = hoop.rimRadius;
-
-        if (!isFrontLayer) {
-          // 1. BAGIAN BELAKANG (Digambar sebelum bola)
-          // Setengah lingkaran belakang dari cincin
-          ctx.strokeStyle = "#e74c3c";
-          ctx.lineWidth = 8;
-          ctx.beginPath();
-          ctx.ellipse(0, 0, r, r * 0.35, 0, Math.PI, Math.PI * 2);
-          ctx.stroke();
-
-        } else {
-          // 2. BAGIAN DEPAN (Digambar setelah bola)
-          // Setengah lingkaran depan dari cincin
-          ctx.strokeStyle = "#e74c3c";
-          ctx.lineWidth = 8;
-          ctx.beginPath();
-          ctx.ellipse(0, 0, r, r * 0.35, 0, 0, Math.PI);
-          ctx.stroke();
-
-          // Jaring (Net)
-          ctx.strokeStyle = "rgba(255,255,255,0.85)";
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          // Garis vertikal jaring
-          for(let i=0; i<=5; i++) {
-            let x = -r + (i * (r*2)/5);
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x * 0.6, r * 1.8);
-          }
-          // Garis horizontal jaring
-          for(let i=1; i<=3; i++) {
-            let y = i * (r*1.8)/4;
-            let w = r - (i * r * 0.1);
-            ctx.moveTo(-w, y);
-            ctx.lineTo(w, y);
-          }
-          ctx.stroke();
+      function drawPolygon(cx, cy, radius, sides, rotation) {
+        ctx.beginPath();
+        for (let i = 0; i < sides; i++) {
+          const angle = rotation + (i * Math.PI * 2) / sides;
+          const x = cx + Math.cos(angle) * radius;
+          const y = cy + Math.sin(angle) * radius;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
-        ctx.restore();
+        ctx.closePath();
       }
 
-      function drawBasketball(sx, sy, scale) {
+      function drawFootball() {
         ctx.save();
-        ctx.translate(sx, sy);
-        ctx.scale(scale, scale);
-        ctx.rotate(ball.rotation);
+        ctx.translate(ball.x, ball.y);
 
-        const r = ball.radius;
-
-        // Base gradient
-        const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
-        grad.addColorStop(0, "#ff8e53");
-        grad.addColorStop(0.7, "#d95c14");
-        grad.addColorStop(1, "#8a3a0c");
-        
+        // Shadow
+        ctx.save();
+        ctx.translate(0, ball.radius * 0.82);
+        ctx.scale(1.0, 0.22);
         ctx.beginPath();
-        ctx.arc(0, 0, r, 0, Math.PI*2);
-        ctx.fillStyle = grad;
+        ctx.ellipse(0, 0, ball.radius * 0.82, ball.radius * 0.42, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0,0,0,0.18)";
+        ctx.fill();
+        ctx.restore();
+
+        // Ball Body
+        ctx.rotate(ball.rotation);
+        ctx.scale(ball.squashX, ball.squashY);
+
+        const gradient = ctx.createRadialGradient(-ball.radius * 0.35, -ball.radius * 0.42, ball.radius * 0.08, 0, 0, ball.radius);
+        gradient.addColorStop(0, "#ffffff");
+        gradient.addColorStop(0.68, "#eeeeee");
+        gradient.addColorStop(1, "#bcbcbc");
+
+        ctx.beginPath();
+        ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
         ctx.fill();
         ctx.lineWidth = 2.5;
-        ctx.strokeStyle = "#222";
+        ctx.strokeStyle = "#111";
         ctx.stroke();
 
-        // Garis tekstur bola basket
-        ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(0, -r); ctx.lineTo(0, r); ctx.stroke();
-        ctx.beginPath(); ctx.arc(-r*0.6, 0, r*0.9, -Math.PI*0.35, Math.PI*0.35); ctx.stroke();
-        ctx.beginPath(); ctx.arc(r*0.6, 0, r*0.9, Math.PI-Math.PI*0.35, Math.PI+Math.PI*0.35); ctx.stroke();
+        // Pentagon
+        drawPolygon(0, 0, ball.radius * 0.27, 5, -Math.PI / 2);
+        ctx.fillStyle = "#111";
+        ctx.fill();
 
+        // Lines
+        const angles = [-Math.PI / 2, Math.PI / 10, Math.PI * 0.9, Math.PI * 1.45, Math.PI * 1.85];
+        angles.forEach(angle => {
+          const px = Math.cos(angle) * ball.radius * 0.64;
+          const py = Math.sin(angle) * ball.radius * 0.64;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(px - Math.cos(angle - 0.5) * 7, py - Math.sin(angle - 0.5) * 7);
+          ctx.lineTo(px + Math.cos(angle - 0.5) * 7, py + Math.sin(angle - 0.5) * 7);
+          ctx.strokeStyle = "#111";
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+        });
+
+        // Highlight
+        ctx.beginPath();
+        ctx.arc(-ball.radius * 0.32, -ball.radius * 0.38, ball.radius * 0.12, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        ctx.fill();
         ctx.restore();
       }
 
-      function spawnParticles(x, y) {
-        for(let i=0; i<25; i++) {
-          particles.push({
-            x: x, y: y,
-            vx: (Math.random() - 0.5) * 15,
-            vy: (Math.random() - 1) * 15,
-            life: 1.0,
-            color: Math.random() > 0.5 ? '#e74c3c' : '#f1c40f'
-          });
+      function hitWall(side, velocity) {
+        if (velocity < 0.7) return;
+        const strength = Math.min(velocity / 20, 1);
+        if (side === "left" || side === "right") {
+          ball.targetSquashX = 1 - 0.23 * strength;
+          ball.targetSquashY = 1 + 0.14 * strength;
         }
+        if (side === "top" || side === "bottom") {
+          ball.targetSquashX = 1 + 0.14 * strength;
+          ball.targetSquashY = 1 - 0.23 * strength;
+        }
+        setTimeout(() => { ball.targetSquashX = 1; ball.targetSquashY = 1; }, 70);
       }
 
-      function updateParticles() {
-        for(let i = particles.length - 1; i >= 0; i--) {
-          let p = particles[i];
-          p.x += p.vx; p.y += p.vy;
-          p.vy += 0.4; // Gravitasi partikel
-          p.life -= 0.02;
-          
-          if(p.life <= 0) particles.splice(i, 1);
-          else {
-            ctx.globalAlpha = p.life;
-            ctx.fillStyle = p.color;
-            ctx.beginPath(); ctx.arc(p.x, p.y, 4.5, 0, Math.PI*2); ctx.fill();
-            ctx.globalAlpha = 1.0;
-          }
-        }
-      }
-
-      // --- MAIN ANIMATION LOOP ---
       let lastFrame = performance.now();
-      const gravity = 0.8;
 
-      function loop(time) {
-        const dt = Math.min((time - lastFrame) / 16.66, 2);
-        lastFrame = time;
-        ctx.clearRect(0, 0, width, height);
+      function update(currentTime) {
+        const dt = Math.min((currentTime - lastFrame) / 16.6667, 2);
+        lastFrame = currentTime;
 
-        // Posisi Ring di dunia 3D (Tengah atas)
-        const hoopWorldX = width / 2;
-        const hoopWorldY = height * 0.18; 
-        const hoopProj = project(hoopWorldX, hoopWorldY, hoop.z);
-        
-        // Batas lantai (Tepat di bawah layar, dikurangi jari-jari bola agar terlihat memantul)
-        const groundY = height - (ball.radius * project(ball.x, ball.y, Math.max(0, ball.z)).scale);
+        if (!ball.dragging && !idleMode && currentTime - lastInteraction >= IDLE_DELAY) {
+            idleMode = true;
+            const speed = Math.hypot(ball.vx, ball.vy);
+            if (speed < 0.001) {
+                ball.vx = IDLE_SPEED; ball.vy = IDLE_SPEED * 0.35;
+            } else {
+                ball.vx = (ball.vx / speed) * IDLE_SPEED;
+                ball.vy = (ball.vy / speed) * IDLE_SPEED;
+            }
+        }
 
-        // 1. UPDATE FISIKA
         if (!ball.dragging) {
-          const prevZ = ball.z;
-          
-          ball.vy += gravity * dt;
-          ball.x += ball.vx * dt;
-          ball.y += ball.vy * dt;
-          ball.z += ball.vz * dt;
-          ball.rotation += (ball.vx * 0.02) * dt;
-
-          // Cek tabrakan dengan ring (Hanya saat bola sedang menuju ke dalam layar)
-          if (ball.vz > 0 && prevZ <= hoop.z && ball.z > hoop.z) {
-             const dx = ball.x - hoopWorldX;
-             const dy = ball.y - hoopWorldY;
-             const dist = Math.hypot(dx, dy);
-
-             if (dist < hoop.rimRadius) {
-               // MASUK (SWISH!)
-               score += 2;
-               ball.vx *= 0.2; 
-               ball.vy = Math.abs(ball.vy) * 0.5; // Jatuh lurus ke bawah
-               ball.vz *= 0.1; // Hampir berhenti menjauh
-               
-               spawnParticles(hoopProj.sx, hoopProj.sy);
-               floatTexts.push({ x: hoopProj.sx, y: hoopProj.sy - 40, life: 1.0, text: "+2 POINTS!" });
-             } 
-             else if (dist < hoop.rimRadius + (ball.radius*0.8)) {
-               // KENA BESI RING (Meleset / Memantul)
-               ball.vz *= -0.7; // Memantul kembali ke arah layar (menuju user)
-               ball.vy *= -0.6;
-               ball.vx += (Math.random() - 0.5) * 15; // Pantulan liar
+          if (idleMode) {
+             const speed = Math.hypot(ball.vx, ball.vy);
+             if (speed > 0.001) {
+                ball.vx = (ball.vx / speed) * IDLE_SPEED;
+                ball.vy = (ball.vy / speed) * IDLE_SPEED;
              }
           }
 
-          // Pantulan Lantai (Cegah bola hilang ke bawah layar)
-          if (ball.y > groundY) {
-            ball.y = groundY;
-            ball.vy *= -0.65; // Efek pantulan bola
-            ball.vx *= 0.85;  // Gesekan lantai
-            if (Math.abs(ball.vy) < 2) ball.vy = 0;
+          ball.x += ball.vx * dt;
+          ball.y += ball.vy * dt;
+          ball.rotation += ball.angularVelocity * dt;
+          ball.angularVelocity *= Math.pow(0.985, dt);
+
+          if (!idleMode) {
+            ball.vx *= Math.pow(0.996, dt);
+            ball.vy *= Math.pow(0.996, dt);
           }
-          
-          // Pantulan Dinding Kiri & Kanan
-          if (ball.x < 0) { ball.x = 0; ball.vx *= -0.7; }
-          if (ball.x > width) { ball.x = width; ball.vx *= -0.7; }
 
-          // SISTEM PENGEMBALIAN BOLA (Bola menggelinding mendekat ke user secara otomatis)
-          if (ball.y >= groundY - 10 && Math.abs(ball.vy) < 1.5) {
-            if (ball.z > 0) {
-                ball.vz -= 0.8 * dt; // Tarik perlahan ke depan (z menurun)
-            } else if (ball.z < 0) {
-                // Hentikan bola saat sudah di depan layar
-                ball.z = 0; 
-                ball.vz = 0; 
-                ball.vx *= 0.9; 
-            }
+          if (ball.x - ball.radius < 0) {
+            ball.x = ball.radius; ball.vx = Math.abs(ball.vx) * 0.82;
+            hitWall("left", Math.abs(ball.vx));
           }
-        }
-
-        // 2. RENDERING (Menciptakan Ilusi 3D dengan Painter's Algorithm)
-        const ballProj = project(ball.x, ball.y, Math.max(0, ball.z));
-
-        if (ball.z > hoop.z) {
-          // Bola sudah melewati ring -> Gambar bagian belakang cincin DULU, lalu bola, lalu bagian depan cincin+jaring
-          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, false); // Belakang
-          drawBasketball(ballProj.sx, ballProj.sy, ballProj.scale);  // Bola
-          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, true);  // Depan
-        } else {
-          // Bola masih di depan ring -> Gambar seluruh ring DULU, baru bola di paling depan
-          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, false); 
-          drawHoop(hoopProj.scale, hoopProj.sx, hoopProj.sy, true);  
-          drawBasketball(ballProj.sx, ballProj.sy, ballProj.scale);
-        }
-
-        // 3. GAMBAR EFEK PARTIKEL & SKOR TULISAN MENGAMBANG
-        updateParticles();
-        
-        for(let i = floatTexts.length - 1; i >= 0; i--) {
-          let t = floatTexts[i];
-          t.y -= 2; t.life -= 0.02;
-          if (t.life <= 0) floatTexts.splice(i, 1);
-          else {
-            ctx.globalAlpha = t.life;
-            ctx.fillStyle = "#e74c3c";
-            ctx.font = "900 36px sans-serif";
-            ctx.textAlign = "center";
-            // Shadow tipis untuk teks
-            ctx.shadowColor = "rgba(255,255,255,0.8)";
-            ctx.shadowBlur = 4;
-            ctx.fillText(t.text, t.x, t.y);
-            ctx.shadowBlur = 0; // Reset
-            ctx.globalAlpha = 1.0;
+          if (ball.x + ball.radius > width) {
+            ball.x = width - ball.radius; ball.vx = -Math.abs(ball.vx) * 0.82;
+            hitWall("right", Math.abs(ball.vx));
+          }
+          if (ball.y - ball.radius < 0) {
+            ball.y = ball.radius; ball.vy = Math.abs(ball.vy) * 0.82;
+            hitWall("top", Math.abs(ball.vy));
+          }
+          if (ball.y + ball.radius > height) {
+            ball.y = height - ball.radius; ball.vy = -Math.abs(ball.vy) * 0.82;
+            hitWall("bottom", Math.abs(ball.vy));
           }
         }
 
-        // Teks Score Utama
-        ctx.fillStyle = "#111";
-        ctx.font = "bold 24px monospace";
-        ctx.textAlign = "right";
-        ctx.fillText("SCORE: " + score, width - 20, 40);
+        ball.squashX += (ball.targetSquashX - ball.squashX) * 0.22 * dt;
+        ball.squashY += (ball.targetSquashY - ball.squashY) * 0.22 * dt;
+        ball.targetSquashX = 1;
+        ball.targetSquashY = 1;
 
-        requestAnimationFrame(loop);
+        ctx.clearRect(0, 0, width, height);
+        drawFootball();
+        requestAnimationFrame(update);
       }
-      
-      requestAnimationFrame(loop);
+      requestAnimationFrame(update);
     }
   </script>
 </body>
