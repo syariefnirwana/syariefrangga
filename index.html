@@ -174,7 +174,7 @@
       transition: opacity .8s ease, visibility .8s ease;
     }
     
-    .loading-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loading-screen.hide, .hello-screen.hide { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
     
     .skeleton { width: min(700px, 85vw); display: flex; flex-direction: column; align-items: center; gap: 25px; }
     .skeleton-box { position: relative; overflow: hidden; background: #ddd; border-radius: 10px; }
@@ -253,6 +253,7 @@
           helloScreen.classList.add("show");
           setTimeout(typeHello, 450);
           setTimeout(() => {
+            helloScreen.classList.remove("show");
             helloScreen.classList.add("hide");
             setTimeout(() => {
               website.classList.add("show");
